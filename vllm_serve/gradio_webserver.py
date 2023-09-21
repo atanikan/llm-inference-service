@@ -5,12 +5,13 @@ import gradio as gr
 import requests
 
 
-def http_bot(prompt):
+def http_bot(prompt, max_tokens=128):
     headers = {"User-Agent": "vLLM Client"}
     pload = {
         "prompt": prompt,
         "stream": True,
-        "max_tokens": 128,
+        "max_tokens": max_tokens,
+        "temperature": 0.0,
     }
     response = requests.post(args.model_url,
                              headers=headers,
@@ -31,9 +32,10 @@ def build_demo():
         gr.Markdown("# vLLM text completion demo\n")
         inputbox = gr.Textbox(label="Input",
                               placeholder="Enter text and press ENTER")
+        max_tokens = gr.Number(label="Max Tokens", value=128, minimum=1, maximum=10000)
         outputbox = gr.Textbox(label="Output",
                                placeholder="Generated result from the model")
-        inputbox.submit(http_bot, [inputbox], [outputbox])
+        inputbox.submit(http_bot, [inputbox,max_tokens], [outputbox])
     return demo
 
 

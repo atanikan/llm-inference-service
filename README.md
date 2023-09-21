@@ -5,7 +5,7 @@ This repository hosts the various ways to run Llama 13B and Llama 70B model usin
 
 * [Initial Setup](#initial-setup)
 * [Running models as an interactive job](#running-llama-13b-and-70b-as-an-interactive-job)
-* [Query the served model using python client and curl](#querying-vllm-models-from-login-node-using-client-api-and-curl)
+* [Query the served model using python client and curl](#querying-models-from-login-node-using-client-api-or-curl)
 * [Query the served model using gradio from browser](#querying-models-from-browser-using-gradio-and-ssh-tunnels)
 
 ## Initial Setup
@@ -23,7 +23,7 @@ pip install gradio
 pip install globus-compute-endpoint 
 ```
 
-:bulb: **Note:**  To use Llama 13B and 70B, you will have to request access at https://huggingface.co/meta-llama/Llama-2-13b-hf and pass a token having permission to this repo either by logging in with `huggingface-cli login` or by passing `token=<your_token>`. Alternatively you can use the default `facebook/opt-125m model` which served by default by vllm.
+:bulb: **Note:**  To use Llama 13B and 70B, you will have to request access at https://huggingface.co/meta-llama/Llama-2-13b-hf. Once access is granted you will generate a token [here](https://huggingface.co/settings/tokens). Pass this token either by `huggingface-cli login` or `token=<your_token>`. Alternatively you can simply use the `facebook/opt-125m model` which is served by default by vllm.
 
 ## Running Llama 13B and 70B as an interactive job
 

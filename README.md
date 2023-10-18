@@ -58,7 +58,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python3 -m vllm.entrypoints.api_server --model meta
 
 #### JupyterHub
 
-After [running the model](#running-llama-70b-and-13b-as-an-interactive-job), from a thetagpu **compute node** head to https://jupyter.alcf.anl.gov/ and from a login node you can use the [gradio_webserver_vllm.ipynb](thetagpu/gradio_webserver_vllm.ipynb) to run a gradio webserver pointing to the Llama 70B on thetagpu. Ensure your kernel is pointing to the same conda environment you created earlier or just install `pandas` and `gradio`. You can change/install kernel by following the [ALCF Jupyter hub docs] (https://docs.alcf.anl.gov/services/jupyter-hub/)
+After [running the model](#running-llama-70b-and-13b-as-an-interactive-job), from a thetagpu **compute node** head to https://jupyter.alcf.anl.gov/ and from a login node you can use the [vllm_example_client.ipynb](thetagpu/vllm_example_client.ipynb) to run a gradio webserver pointing to the Llama 70B on thetagpu. Ensure your kernel is pointing to the same conda environment you created earlier or just install `pandas` and `gradio`. You can change/install kernel by following the [ALCF Jupyter hub docs] (https://docs.alcf.anl.gov/services/jupyter-hub/)
 
 
 #### Using curl or vllm_client python script

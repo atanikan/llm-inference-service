@@ -20,6 +20,7 @@ conda activate <path_to_conda_environment> #change
 pip install vllm
 pip install gradio
 pip install pandas 
+pip install ray
 ```
 
 :bulb: **Note:**  To use Llama 13B and 70B, you will have to request access at https://huggingface.co/meta-llama/. Once access is granted you will generate a token [here](https://huggingface.co/settings/tokens). Pass this token by `huggingface-cli login`. Alternatively you can simply use the `facebook/opt-125m model` which is served by default by vllm.

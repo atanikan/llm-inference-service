@@ -5,8 +5,7 @@ This repository hosts the various ways to run Llama 13B and Llama 70B model usin
 
 * [Initial Setup](#initial-setup)
 * [Running models as an interactive job](#running-llama-70b-and-13b-as-an-interactive-job)
-* [Query the served model using python client and curl](#querying-models-from-login-node-using-client-api-or-curl)
-* [Query the served model using gradio from browser](#querying-models-from-browser-using-gradio-and-ssh-tunnels)
+* [Query the served model using jupyter, python client and curl](#querying-models-using-jupyter-or-curl)
 
 ## Initial Setup
 
@@ -20,16 +19,16 @@ conda create -p <path_to_conda_environment> python==3.9 #change
 conda activate <path_to_conda_environment> #change
 pip install vllm
 pip install gradio
-pip install globus-compute-endpoint 
+pip install pandas 
 ```
 
-:bulb: **Note:**  To use Llama 13B and 70B, you will have to request access at https://huggingface.co/meta-llama/Llama-2-13b-hf. Once access is granted you will generate a token [here](https://huggingface.co/settings/tokens). Pass this token by `huggingface-cli login`. Alternatively you can simply use the `facebook/opt-125m model` which is served by default by vllm.
+:bulb: **Note:**  To use Llama 13B and 70B, you will have to request access at https://huggingface.co/meta-llama/. Once access is granted you will generate a token [here](https://huggingface.co/settings/tokens). Pass this token by `huggingface-cli login`. Alternatively you can simply use the `facebook/opt-125m model` which is served by default by vllm.
 
 ## Running Llama 70B and 13B as an interactive job
 
 ### Thetagpu
 
-Submit interactive job using `qsub -I -A <projectname> -n 1 -t 60 -q full-node --attrs filesystems=home,grand,eagle:pubnet=true` and run the vllm api server as shown below on a compute node.
+Login to `theta` and ssh to thetagpusn1 `ssh thetagpusn1` to submit an interactive job using `qsub -I -A <projectname> -n 1 -t 60 -q full-node --attrs filesystems=home,grand,eagle:pubnet=true` and run the vllm api server as shown below on a compute node. Alternatively use `qsub-gpu`.
 
 ```bash
 qsub -I -A <projectname> -n 1 -t 60 -q full-node --attrs filesystems=home,grand,eagle:pubnet=true
@@ -53,7 +52,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python3 -m vllm.entrypoints.api_server --model meta
 
 :bulb: **Note:** Change the `meta-llama/Llama-2-70b-hf` to `meta-llama/Llama-2-13b-hf` for 70b.
 
-## Querying models from login node using client api or curl or jupyterhub
+## Querying models using jupyter or curl
 
 ### Thetagpu
 
@@ -64,7 +63,6 @@ After [running the model](#running-llama-70b-and-13b-as-an-interactive-job), fro
 
 #### Using curl or vllm_client python script
 After [running the model](#running-llama-70b-and-13b-as-an-interactive-job), from a thetagpu **compute node** run [curl.sh](thetagpu/curl.sh) or [vllm_client.py](thetagpu/vllm_client.py)
-
 
 :bulb: **Note:** This repository should be cloned and run from the same path as where the file is located in order for the scripts to pick the dependencies.
 

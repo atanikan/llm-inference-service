@@ -59,11 +59,14 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python3 -m vllm.entrypoints.api_server --model meta
 
 #### JupyterHub
 
-After [running the model](#running-llama-70b-and-13b-as-an-interactive-job), from a thetagpu **compute node** head to https://jupyter.alcf.anl.gov/ and from a login node you can use the [gradio_webserver_vllm.ipynb](thetagpu/gradio_webserver_vllm.ipynb) to run a gradio webserver pointing to the Llama 70B on thetagpu. Ensure your kernel is pointing to the same conda environment you created earlier or just install `pandas` and `gradio`. You can change kernel by following the [ALCF Jupyter hub docs] (https://docs.alcf.anl.gov/services/jupyter-hub/)
+After [running the model](#running-llama-70b-and-13b-as-an-interactive-job), from a thetagpu **compute node** head to https://jupyter.alcf.anl.gov/ and from a login node you can use the [gradio_webserver_vllm.ipynb](thetagpu/gradio_webserver_vllm.ipynb) to run a gradio webserver pointing to the Llama 70B on thetagpu. Ensure your kernel is pointing to the same conda environment you created earlier or just install `pandas` and `gradio`. You can change/install kernel by following the [ALCF Jupyter hub docs] (https://docs.alcf.anl.gov/services/jupyter-hub/)
 
 
 #### Using curl or vllm_client python script
-After [running the model](#running-llama-70b-and-13b-as-an-interactive-job), from a thetagpu **compute node** run [fetch_hostname.sh](thetagpu/fetch_hostname.sh) or [vllm_client.py](thetagpu/vllm_client.py)
+After [running the model](#running-llama-70b-and-13b-as-an-interactive-job), from a thetagpu **compute node** run [curl.sh](thetagpu/curl.sh) or [vllm_client.py](thetagpu/vllm_client.py)
+
+
+:bulb: **Note:** This repository should be cloned and run from the same path as where the file is located in order for the scripts to pick the dependencies.
 
 ### Polaris
 
@@ -78,7 +81,7 @@ bash local_tunnel.sh atanikanti polaris-login-01.alcf.anl.gov /grand/datascience
 ```
 
 #### Using curl or vllm_client python script
-After [running the model](#running-llama-70b-and-13b-as-an-interactive-job) on Polaris, run the [tunnel.sh](polaris/tunnel.sh) to establish a ssh tunnel to the remote node followed by running the [vllm_client.py](polaris/vllm_client.py) to query the running model.
+After [running the model](#running-llama-70b-and-13b-as-an-interactive-job) on Polaris, run the [tunnel.sh](polaris/tunnel.sh) to establish a ssh tunnel to the remote node followed by running the [vllm_client.py](polaris/vllm_client.py) to query the running model or [curl.sh](polaris/curl.sh).
 
 ```bash
 bash tunnel.sh

@@ -1,14 +1,17 @@
 # vllm_service
-This repository hosts the various ways to run [vllm](https://vllm.readthedocs.io/en/latest/) in order to serve LLM models on ALCF systems. The target ALCF systems in this example is Polaris
+This repository hosts the various ways to run [vllm](https://vllm.readthedocs.io/en/latest/) version `0.2.1.post1` in order to serve LLM models on ALCF systems. The target ALCF systems in this example is Polaris
+
+You can either use globus to serve LLM models using vLLM or directly run it on Polaris
 
 # Table of Contents
 
-* [Inference using Globus](#inference-using-globus)
-* [Inference runs by tunneling to the compute node](#inference-runs-by-tunneling-to-the-compute-node)
+* [Remote Inference using Globus](#inference-using-globus)
+* [Infernece using submission script] (#inference-using-submission-script)
+* [Inference in interactive mode](#inference-in-interactive-mode)
 
-# Inference using Globus
+# Remote inference using Globus
 
-The [vLLM_Inference.ipynb](./polaris/inference_using_globus/vLLM_Inference.ipynb) has instructions to trigger vllm inference runs remotely. This notebook can be run from anywhere.  The only requirement is a local environment, such as a conda environment or python, that has python 3.10 installed along with the Globus packages `globus_compute_sdk` and `globus_cli`.  For e.g.
+The [vLLM_Inference.ipynb](./polaris/vLLM/inference_using_globus/vLLM_Inference.ipynb) has instructions to trigger vllm inference runs remotely. This notebook can be run from anywhere.  The only requirement is a local environment, such as a conda environment or python, that has python 3.10 installed along with the Globus packages `globus_compute_sdk` and `globus_cli`.  For e.g.
 
 ```bash
 python3.10 -m venv vllm-globus-env
@@ -21,7 +24,21 @@ jupyter notebook
 > Change the kernel to point to the vllm env in your notebook. <br/>
 > The vllm environment on Polaris should also contain the same python version 3.10. It is therefore necessary for this environment on your local machine to have a python version close to this version.
 
-# Inference runs by tunneling to the compute node
+Instructions to setup the globus endpoint and environment on Polaris are mentioned in the [notebook](./polaris/vLLM/inference_using_globus/vLLM_Inference.ipynb)
+
+
+# Inference using submission script
+
+You can use the [job_submission.sh](./polaris/vLLM/inference_using_submissionscript/job_submission.sh) file to submit a batch job
+
+```bash
+qsub job_submission.sh
+```
+
+Ensure you point to the [construct_ray_cluster.bash](./polaris/vLLM/inference_using_submissionscript/construct_ray_cluster.bash) file correctly in the job submission script. Also change the conda environment accordingly.
+
+
+# Inference in interactive mode
 
 * In order to directly run vllm on compute node, first login to Polaris and clone this repository. Subsequently run the following from any of the login nodes.
 
@@ -43,6 +60,8 @@ module load conda
 conda activate <path_to_conda_environment> #change path
 CUDA_VISIBLE_DEVICES=0,1,2,3 python3 -m vllm.entrypoints.api_server --model meta-llama/Llama-2-70b-chat-hf --tokenizer=hf-internal-testing/llama-tokenizer --download-dir=$PWD --host 0.0.0.0 --tensor-parallel-size 4 # for the default facebook/opt-125m model just run python -m vllm.entrypoints.api_server
 ```
+
+* For models that are too large to fit in one node. You will need a ray cluster. You can spin up a ray cluster using the [construct_ray_cluster.bash](./polaris/vLLM/inference_using_sshtunnel/construct_ray_cluster.bash) followed by vllm entrypoint server.
 
 :bulb: **Note:**  To use Llama 13B and 70B, you will have to request access at https://huggingface.co/meta-llama/. Once access is granted you will generate a token [here](https://huggingface.co/settings/tokens). Pass this token by `huggingface-cli login`. Alternatively you can simply use the `facebook/opt-125m model` which is served by default by vllm.
 

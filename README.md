@@ -1,12 +1,12 @@
 # vllm_service
 This repository hosts the various ways to run [vllm](https://vllm.readthedocs.io/en/latest/) version `0.2.1.post1` in order to serve LLM models on ALCF systems. The target ALCF systems in this example is Polaris
 
-You can either use globus to serve LLM models using vLLM or directly run it on Polaris
+You can either use globus to serve LLM models for remote inference using vLLM or directly run it on Polaris. We have defined 3 ways to serve LLM on Polaris below
 
 # Table of Contents
 
 * [Remote Inference using Globus](#inference-using-globus)
-* [Infernece using submission script] (#inference-using-submission-script)
+* [Inference using submission script](#inference-using-submission-script)
 * [Inference in interactive mode](#inference-in-interactive-mode)
 
 # Remote inference using Globus
@@ -26,6 +26,8 @@ jupyter notebook
 
 Instructions to setup the globus endpoint and environment on Polaris are mentioned in the [notebook](./polaris/vLLM/inference_using_globus/vLLM_Inference.ipynb)
 
+> **__Note:__** <br>
+> Multi node runs using vllm and globus for large models is work in progress
 
 # Inference using submission script
 
@@ -39,7 +41,6 @@ Ensure you point to the [construct_ray_cluster.bash](./polaris/vLLM/inference_us
 
 
 # Inference in interactive mode
-
 * In order to directly run vllm on compute node, first login to Polaris and clone this repository. Subsequently run the following from any of the login nodes.
 
 ```bash

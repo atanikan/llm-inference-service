@@ -97,6 +97,10 @@ python3 vllm_client.py # or use curl see `curl.sh`
 
 :bulb: **Note:** Ensure you `chmod +x` all the bash scripts.
 
+## Common Troubleshooting
+
+If you see this error `OSError: AF_UNIX path length cannot exceed 107 bytes: ‘/var/tmp/pbs.1864219.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/ray/session_2024-04-11_19-57-12_961576_31822/sockets/plasma_store` run `export RAY_TMPDIR='/tmp'` 
+
 ### Thetagpu
 
 Login to `theta` and ssh to thetagpusn1 `ssh thetagpusn1` to submit an interactive job using `qsub -I -A <projectname> -n 1 -t 60 -q full-node --attrs filesystems=home,grand,eagle:pubnet=true` and run the vllm api server as shown below on a compute node. Alternatively use `qsub-gpu`.

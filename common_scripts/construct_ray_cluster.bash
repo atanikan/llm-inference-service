@@ -72,3 +72,6 @@ worker_start_ray_commands:
 EOF
 # Start ray cluster
 ray up $yaml_file -y && sleep 60
+
+# Set RAY_ADDRESS so that when the user runs vllm it will connect to this cluster and not start a new one
+export RAY_ADDRESS="$head_ip:6379"

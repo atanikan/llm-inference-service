@@ -3,7 +3,6 @@ from argparse import ArgumentParser
 import time
 from typing import List, Tuple
 from huggingface_hub import login
-login("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")
 
 
 def measure_performance_and_generate_outputs(

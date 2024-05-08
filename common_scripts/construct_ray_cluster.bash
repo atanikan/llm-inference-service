@@ -34,6 +34,8 @@ min_workers=$((min_workers - 1)) # Subtracting head node
 # Current datetime for file naming
 #current_datetime=$(date '+%Y%m%d_%H%M%S')
 
+#export RAY_ADDRESS=$head_ip 
+
 # New YAML file name
 yaml_file="ray_cluster.yaml"
 
@@ -63,15 +65,32 @@ head_setup_commands: []
 worker_setup_commands: []
 
 head_start_ray_commands:
-  - module load conda && conda activate $conda_env_path && ray stop --force
-  - module load conda && conda activate $conda_env_path && ray start --head --port=6379 --object-manager-port=8076 --temp-dir=/tmp --autoscaling-config=~/ray_bootstrap_config.yaml
+  - module use /soft/modulefiles/ && module load conda && conda activate $conda_env_path && ray stop --force
+  - module use /soft/modulefiles/ && module load conda && conda activate $conda_env_path && ray start --head --port=6379 --object-manager-port=8076 --temp-dir=/tmp --autoscaling-config=~/ray_bootstrap_config.yaml
 
 worker_start_ray_commands:
-  - module load conda && conda activate $conda_env_path && ray stop --force
-  - sleep 30 && module load conda && conda activate $conda_env_path && ray start --address=\$RAY_HEAD_IP:6379 --temp-dir=/tmp
-EOF
-# Start ray cluster
-ray up $yaml_file -y && sleep 60
+  - module use /soft/modulefiles/ && module load conda && conda activate $conda_env_path && ray stop --force
+  - sleep 30 && module use /soft/modulefiles/ && module load conda && conda activate $conda_env_path && ray start --address=\$RAY_HEAD_IP:6379 --temp-dir=/tmp
 
-# Set RAY_ADDRESS so that when the user runs vllm it will connect to this cluster and not start a new one
+EOF
+
+# Start ray cluster
+# Check if the current node is the head node
+current_node=$(hostname -f) # or $(hostname -i) for IP address
+echo "I am on host $current_node and head ip is $head_ip"
+if [ "$current_node" = "$head_ip" ]; then
+    # Start ray cluster
+    ray up $yaml_file -y && sleep 60 && ray status
+else
+    echo "This script is not running on the head node. ray up should be executed on the head node."
+fi
+
+export HOST_IP="$head_ip"
 export RAY_ADDRESS="$head_ip:6379"
+export HF_DATASETS_CACHE="/eagle/argonne_tpc/model_weights/"
+export HF_HOME="/eagle/argonne_tpc/model_weights/"
+export RAY_TMPDIR="/tmp"
+export HTTP_PROXY="http://proxy.alcf.anl.gov:3128"
+export HTTPS_PROXY="http://proxy.alcf.anl.gov:3128"
+export http_proxy="http://proxy.alcf.anl.gov:3128"
+export https_proxy="http://proxy.alcf.anl.gov:3128"

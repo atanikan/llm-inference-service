@@ -1,8 +1,8 @@
 #!/bin/bash -l
-#PBS -l select=2:system=polaris
+#PBS -l select=1:system=polaris
 #PBS -l place=scatter
-#PBS -l walltime=0:30:00
-#PBS -l filesystems=home:grand:eagle
+#PBS -l walltime=00:60:00
+#PBS -l filesystems=home:eagle
 #PBS -q debug
 #PBS -A datascience
 
@@ -20,21 +20,21 @@ echo "NUM_OF_NODES= ${NNODES} TOTAL_NUM_GPUS= ${NGPUS} GPUS_PER_NODE= ${NGPU_PER
 
 # Initialize environment
 export TMPDIR=/tmp
-module load conda/2023-10-04
-conda activate /grand/datascience/atanikanti/envs/vllm_conda_polaris_env
+
+module use /soft/modulefiles/
+module load conda/2024-04-29 
+conda activate /grand/datascience/atanikanti/envs/vllm_cuda12_env 
 #echo "Activated environment: $(conda info --envs | grep '*')"
 pip list | grep ray
 #echo "PATH: $PATH"
 
 # Run ray cluster script
-bash construct_ray_cluster.bash && wait
+source ../common_scripts/construct_ray_cluster.bash
 
 # execute the script
 # run your script here
-sleep 60 && wait
-ray status
 
 #export HOST_IP=$(sed -n '1p' "$PBS_NODEFILE")
 
-python3 vllm_batch.py --tensor_parallel_size=8
+python3 vllm_batch.py --tensor_parallel_size=4
 #python -m vllm.entrypoints.api_server --model meta-llama/Llama-2-70b-chat-hf --trust-remote-code --tensor-parallel-size 4 --tokenizer hf-internal-testing/llama-tokenizer --host localhost --download-dir /grand/datascience/atanikanti/vllm_service

@@ -45,6 +45,7 @@ Ensure you point to the [construct_ray_cluster.bash](common_scripts/construct_ra
 
 ```bash
 git clone git@github.com:atanikan/vllm_service.git
+module use /soft/modulefiles
 module load conda
 conda activate base
 conda create -p <path_to_conda_environment> python==3.10 --y #change
@@ -61,6 +62,7 @@ pip install -r requirements.txt
 
 ```bash
 qsub -I -A <project> -q debug -l select=1 -l walltime=01:00:00 -l filesystems=home:grand
+module use /soft/modulefiles
 module load conda
 conda activate <path_to_conda_environment> #change path
 CUDA_VISIBLE_DEVICES=0,1,2,3 python3 -m vllm.entrypoints.api_server --model meta-llama/Llama-2-70b-chat-hf --tokenizer=hf-internal-testing/llama-tokenizer --download-dir=$PWD --host 0.0.0.0 --tensor-parallel-size 4 # for the default facebook/opt-125m model just run python -m vllm.entrypoints.api_server
@@ -72,6 +74,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python3 -m vllm.entrypoints.api_server --model meta
 
 ```bash
 qsub -I -A <project> -q debug -l select=2 -l walltime=01:00:00 -l filesystems=home:grand
+module use /soft/modulefiles
 module load conda
 conda activate <path_to_conda_environment> #change path
 source ./common_scripts/construct_ray_cluster.bash # It's important that you source the script. This will set the RAY_ADDRESS variable in your session and let the next command connect to the multi-node cluster.
@@ -96,33 +99,3 @@ python3 vllm_client.py # or use curl see `curl.sh`
 :bulb: **Note:** You can run `python3 vllm_client.py -h` to view all available options
 
 :bulb: **Note:** Ensure you `chmod +x` all the bash scripts.
-
-## Common Troubleshooting
-
-If you see this error `OSError: AF_UNIX path length cannot exceed 107 bytes: ‘/var/tmp/pbs.1864219.polaris-pbs-01.hsn.cm.polaris.alcf.anl.gov/ray/session_2024-04-11_19-57-12_961576_31822/sockets/plasma_store` run `export RAY_TMPDIR='/tmp'` 
-
-### Thetagpu
-
-Login to `theta` and ssh to thetagpusn1 `ssh thetagpusn1` to submit an interactive job using `qsub -I -A <projectname> -n 1 -t 60 -q full-node --attrs filesystems=home,grand,eagle:pubnet=true` and run the vllm api server as shown below on a compute node. Alternatively use `qsub-gpu`.
-
-```bash
-qsub -I -A <projectname> -n 1 -t 60 -q full-node --attrs filesystems=home,grand,eagle:pubnet=true
-module load conda
-conda activate <path_to_conda_environment> #change path
-CUDA_VISIBLE_DEVICES=0,1,2,3 python3 -m vllm.entrypoints.api_server --model meta-llama/Llama-2-70b-chat-hf --tokenizer=hf-internal-testing/llama-tokenizer --download-dir=$PWD --host 0.0.0.0 --tensor-parallel-size 4 # for the default facebook/opt-125m model just run python -m vllm.entrypoints.api_server
-```
-
-:bulb: **Note:** Change the `meta-llama/Llama-2-70b-chat-hf` to `meta-llama/Llama-2-13b-chat-hf` for 13b.
-
-#### JupyterHub
-
-After [running the model](#running-llama-70b-and-13b-as-an-interactive-job), from a thetagpu **compute node** head to https://jupyter.alcf.anl.gov/ and from a login node you can use the [vllm_example_client.ipynb](thetagpu/vllm_example_client.ipynb) to run a gradio webserver pointing to the Llama 70B on thetagpu. Ensure your kernel is pointing to the same conda environment you created earlier or just install `pandas` and `gradio`. You can change/install kernel by following the [ALCF Jupyter hub docs] (https://docs.alcf.anl.gov/services/jupyter-hub/)
-
-
-#### Using curl or vllm_client python script
-After [running the model](#running-llama-70b-and-13b-as-an-interactive-job), from a thetagpu **compute node** run [curl.sh](thetagpu/curl.sh) or [vllm_client.py](thetagpu/vllm_client.py)
-
-:bulb: **Note:** This repository should be cloned and run from the same path as where the file is located in order for the scripts to pick the dependencies.
-
-
-

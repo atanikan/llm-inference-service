@@ -1,0 +1,6 @@
+--2024-05-22 16:05:05--  https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg?auto=compress
+Resolving proxy.alcf.anl.gov (proxy.alcf.anl.gov)... 140.221.69.42
+Connecting to proxy.alcf.anl.gov (proxy.alcf.anl.gov)|140.221.69.42|:3128... connected.
+Proxy request sent, awaiting response... 403 Forbidden
+2024-05-22 16:05:05 ERROR 403: Forbidden.
+

@@ -57,13 +57,10 @@ apptainer instance run --env OLLAMA_MODELS="/eagle/argonne_tpc/model_weights/" -
 ```
 > :Note: You need to replace `/eagle/argonne_tpc/model_weights/` with the path to the directory containing the model weights you have access to.
 
-After starting the server you need to unset proxy variables to connect to the Ollama server. You can do this by running the following command:
+After starting the server you need to set no_proxy variables to connect to the Ollama server on a different shell or run the previous script in the background. You can do this by running the following command:
 
 ```bash
-unset http_proxy
-unset https_proxy
-unset HTTP_PROXY
-unset HTTPS_PROXY
+export hostname=$(hostname) && export no_proxy=$hostname && export NO_PROXY=$hostname
 ```
 
 To pull models, you can use the following command:

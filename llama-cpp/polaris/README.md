@@ -51,19 +51,4 @@ To interact with the running model you can use example scripts provided in the r
 python3 openai_example.py 
 ```
 
-To run inference on the models, you can use the following command:
-
-Using curl:
-```bash
-curl -X POST http://localhost:11434/api/generate -d '{
-  "model": "llama3:70b",
-  "prompt":"Why is the sky blue?"
- }'
-```
-
-Using python:
-```bash
-apptainer exec instance://ollama python3 run_inference.py 
-```
-
-For full list of commands to interact with the api, you can refer to the [Ollama Github documentation](https://github.com/ollama/ollama/blob/main/docs/api.md).
+Example and documentation can be found [here](https://llama-cpp-python.readthedocs.io/en/latest/server/)

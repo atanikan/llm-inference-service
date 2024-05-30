@@ -23,18 +23,18 @@ export TMPDIR=/tmp
 
 module use /soft/modulefiles/
 module load conda/2024-04-29 
-conda activate /grand/datascience/atanikanti/envs/vllm_cuda12_env 
+conda activate /grand/datascience/atanikanti/envs/vllm_env 
 #echo "Activated environment: $(conda info --envs | grep '*')"
 pip list | grep ray
 #echo "PATH: $PATH"
 
-# Run ray cluster script
-source ../common_scripts/construct_ray_cluster.bash
 
 # execute the script
 # run your script here
 
-#export HOST_IP=$(sed -n '1p' "$PBS_NODEFILE")
-
+export HOST_IP=$(sed -n '1p' "$PBS_NODEFILE")
+export HF_DATASETS_CACHE="/eagle/argonne_tpc/model_weights/"
+export HF_HOME="/eagle/argonne_tpc/model_weights/"
+export RAY_TMPDIR="/tmp"
 python3 vllm_batch.py --tensor_parallel_size=4
 #python -m vllm.entrypoints.api_server --model meta-llama/Llama-2-70b-chat-hf --trust-remote-code --tensor-parallel-size 4 --tokenizer hf-internal-testing/llama-tokenizer --host localhost --download-dir /grand/datascience/atanikanti/vllm_service

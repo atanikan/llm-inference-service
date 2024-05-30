@@ -14,9 +14,9 @@ module load conda
 conda create -p /grand/datascience/atanikanti/envs/llama-env python==3.10.12 -y
 conda activate /grand/datascience/atanikanti/envs/llama-env
 
-CMAKE_ARGS="-DCMAKE_CUDA_COMPILER=/soft/compilers/cudatoolkit/cuda-12.2.2/bin/nvcc" CT_CUBLAS=1 pip install llama-cpp-python --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/122
+CMAKE_ARGS="-DCMAKE_CUDA_COMPILER=/soft/compilers/cudatoolkit/cuda-12.2.2/bin/nvcc" -DLLAMA_CUDA=on pip install llama-cpp-python
 
-CMAKE_ARGS="-DCMAKE_CUDA_COMPILER=/soft/compilers/cudatoolkit/cuda-12.2.2/bin/nvcc" CT_CUBLAS=1 pip install llama-cpp-python[server] --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/122
+CMAKE_ARGS="-DCMAKE_CUDA_COMPILER=/soft/compilers/cudatoolkit/cuda-12.2.2/bin/nvcc" -DLLAMA_CUDA=on pip install llama-cpp-python[server] # for server
 
 pip install openai
 pip install globus-compute-endpoint
@@ -24,8 +24,13 @@ pip install globus-compute-endpoint
 
 
 ## Usage
-To run llama.cpp server on Polaris, you can first setup the config file to load models similar to [here](./model.config). 
-To change any of the model weights or if you like llama.cpp to serve new models you can download the gguf files of that model from hugging face.
+
+### Use Globus Compute to run llamacpp remotely
+Instructions in [llamacpp_inference.ipynb](llamacpp_inference.ipynb) notebook will guide you in triggering llamcpp inference runs remotely from your local machine using globus compute
+
+### Use interactive mode on Polaris to run llama.cpp on compute node
+To run llama.cpp server on Polaris, you can first setup the config file to load models similar to [here](./model.config) or directly run the model. 
+To change any of the model weights or if you like llama.cpp to serve new models you can download the [gguf files](https://huggingface.co/TheBloke/CodeLlama-70B-Instruct-GPTQ) of that model from hugging face.
 
 Subsequently start the server as follows on a compute node.
 
@@ -34,7 +39,7 @@ qsub -I -A datascience -q debug -l select=1 -l walltime=01:00:00 -l filesystems=
 module use /soft/modulefiles/
 module load conda
 conda activate /grand/datascience/atanikanti/envs/llama_cpp_python_env/
-python3 -m llama_cpp.server --config_file model.config
+python3 -m llama_cpp.server --model /eagle/argonne_tpc/model_weights/gguf_files/llama-2-70b.Q5_M.gguf
 ```
 
 > :Note: You need to replace `/eagle/argonne_tpc/model_weights/` with the path to the directory containing the model weights you have access to in the config file.

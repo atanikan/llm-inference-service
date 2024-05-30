@@ -15,8 +15,7 @@ engine:
     select_options: ngpus=4
     type: PBSProProvider
     walltime: 00:60:00
-    worker_init: module load conda; conda activate /eagle/tpc/zilinghan/conda_envs/vllm_web;
-      source /eagle/tpc/zilinghan/eval-web-service/construct_ray.bash
+    worker_init: module load conda; conda activate /eagle/tpc/zilinghan/conda_envs/vllm_web;export HF_DATASETS_CACHE="/eagle/argonne_tpc/model_weights/";export HF_HOME="/eagle/argonne_tpc/model_weights/";export RAY_TMPDIR="/tmp"
   strategy:
     max_idletime: 3600
     type: SimpleStrategy

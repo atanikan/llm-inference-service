@@ -58,13 +58,12 @@ def main():
     """
     start_time = time.time()
     parser = ArgumentParser()
-    parser.add_argument("--model_name", type=str, default="meta-llama/Llama-2-70b-chat-hf")
+    parser.add_argument("--model_name", type=str, default="meta-llama/Llama-2-7b-chat-hf")
     parser.add_argument("--tokenizer", type=str, default="hf-internal-testing/llama-tokenizer")
-    parser.add_argument("--tensor_parallel_size", type=int, default=4)
+    parser.add_argument("--tensor_parallel_size", type=int, default=2)
     parser.add_argument("--prompt", type=str, default="The president of the United States is")
-    parser.add_argument("--temperature", type=float, default=0.8)
-    parser.add_argument("--max_tokens", type=int, default=1024)
-
+    parser.add_argument("--temperature", type=float, default=0.2)
+    parser.add_argument("--max_tokens", type=int, default=16)
     args = parser.parse_args()
 
     stats = measure_performance_and_generate_outputs(args.max_tokens, args.temperature, args.model_name, args.tokenizer, args.prompt, args.tensor_parallel_size)

@@ -1,0 +1,29 @@
+amqp_port: 443
+display_name: llama-cpp-cuda-mistral-7b
+engine:
+ provider:
+  init_blocks: 0
+  max_blocks: 2
+  min_blocks: 0
+  nodes_per_block: 1
+  type: PBSProProvider
+  launcher:
+   type: SimpleLauncher
+  account: DataServicePrototype
+  cpus_per_node: 64
+  select_options: ngpus=4
+  queue: 'debug'
+  walltime: 00:60:00
+  scheduler_options: "#PBS -l filesystems=home:eagle"
+  worker_init: 'module use /soft/modulefiles; module load conda; conda activate /home/openinference_svc/envs/llama-cpp-cuda-env; /home/openinference_svc/frameworks/llama.cpp/build/bin/server -m /eagle/argonne_tpc/model_weights/gguf_files/Mistral-7B-Instruct-v0.3-Q6_K.gguf -c 2048 -a Mistral-7B -ngl 4 --metrics -fa & sleep 20'
+ max_workers_per_node: 4
+ job_status_kwargs:
+  max_idletime: 3000
+ address:
+  type: address_by_interface
+  ifname: bond0
+ type: GlobusComputeEngine
+
+# Limit the functions UUID that can be execute
+allowed_functions:
+  - 34765efb-c3af-4f21-a5f4-a48689e813d4  #

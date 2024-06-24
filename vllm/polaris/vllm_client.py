@@ -3,9 +3,11 @@
 import argparse
 import json
 from typing import Iterable, List
-
+import socket
 import requests
-
+import os
+hostname = socket.gethostname()
+os.environ['no_proxy'] = f"{hostname},localhost,127.0.0.1" # hostname
 
 def clear_line(n: int = 1) -> None:
     LINE_UP = '\033[1A'
@@ -57,7 +59,7 @@ if __name__ == "__main__":
     parser.add_argument("--prompt", type=str, default="San Francisco is a")
     parser.add_argument("--stream", action="store_true")
     parser.add_argument("--temperature", type=float, default=0.0)
-    parser.add_argument("--max_tokens", type=int, default=16)
+    parser.add_argument("--max_tokens", type=int, default=128)
     args = parser.parse_args()
     prompt = args.prompt
     api_url = f"http://{args.host}:{args.port}/generate"

@@ -2,9 +2,8 @@
 import globus_compute_sdk
 
 # Define Globus Compute function
-def llamacpp_inference_Llama38B_Instruct (prompt=None):
+def llamacpp_inference (**kwargs):
     import openai
-    
     import socket
     import json
     import os
@@ -13,21 +12,33 @@ def llamacpp_inference_Llama38B_Instruct (prompt=None):
     hostname = socket.gethostname()
     os.environ['no_proxy'] = hostname
     # Construct the base_url
-    base_url = f"http://{hostname}:8000/v1"
+    base_url = f"http://{hostname}:8080/v1"
     
+    # Get the API key from environment variable
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        api_key="random_api_key"
+        raise ValueError("Missing OpenAI API key")
+
+
     # Initialize the OpenAI client with the base URL and API key
-    client = openai.OpenAI(base_url=base_url, api_key="cxvff_xxxx")
-    
-    # Send a request to the chat completions endpoint
-    response = client.chat.completions.create(
-        model="Meta-Llama-3-8B-Instruct-Q8_0.gguf",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt}
-        ],
-        temperature=0.2,
-        logprobs=True
-    )
+    client = openai.OpenAI(base_url=base_url, api_key=api_key)
+
+    try:
+        # Send a request to the chat completions endpoint
+        response = client.chat.completions.create(
+            model="Meta-Llama-3-8B-Instruct-Q8_0.gguf",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": kwargs.get('prompt', '')}
+            ],
+            **kwargs  # Pass all other keyword arguments to the API
+        )
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+
+    return response
     
     
     response_dict = response.to_dict()  # This converts the response to a dictionary

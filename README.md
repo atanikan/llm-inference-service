@@ -3,3 +3,4 @@ This repository provides the installation and usage of various LLM Inference fra
 * [llama.cpp](llama-cpp/polaris/README.md)
 * [vLLM](vllm/polaris/README.md)
 * [ollama](ollama/polaris/README.md)
+* [deepspeed-inference](deepspeed-inference-mii)

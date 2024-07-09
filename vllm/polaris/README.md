@@ -6,7 +6,7 @@ vLLM is fast with:
 * Continuous batching of incoming requests
 This README provides instructions on how to install and use vLLM version `0.4.2` on Polaris.
 
-> **NOTE**: Current vLLM **does not** scale on more than one node (tensor-parallel-size>=4) on Polaris for models with large footprint like Llama70B. We are working on fixing this.
+> **NOTE**: Current vLLM **does not** scale on more than one node (tensor-parallel-size>4) on Polaris. We are working on fixing this.
 
 ## Installation
 To install vLLM on Polaris, run the following

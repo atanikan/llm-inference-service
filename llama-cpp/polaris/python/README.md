@@ -14,9 +14,9 @@ module load conda
 conda create -p /grand/datascience/atanikanti/envs/llama-env python==3.10.12 -y
 conda activate /grand/datascience/atanikanti/envs/llama-env
 
-CMAKE_ARGS="-DCMAKE_CUDA_COMPILER=/soft/compilers/cudatoolkit/cuda-12.2.2/bin/nvcc" -DLLAMA_CUDA=on pip install llama-cpp-python
+CC=gcc-12 CXX=g++-12 CMAKE_ARGS="-DCMAKE_CUDA_COMPILER=/soft/compilers/cudatoolkit/cuda-12.2.2/bin/nvcc" CMAKE_ARGS="-DLLAMA_CUDA=on" pip install llama-cpp-python
 
-CMAKE_ARGS="-DCMAKE_CUDA_COMPILER=/soft/compilers/cudatoolkit/cuda-12.2.2/bin/nvcc" -DLLAMA_CUDA=on pip install llama-cpp-python[server] # for server
+CC=gcc-12 CXX=g++-12 CMAKE_ARGS="-DCMAKE_CUDA_COMPILER=/soft/compilers/cudatoolkit/cuda-12.2.2/bin/nvcc" CMAKE_ARGS="-DLLAMA_CUDA=on" pip install llama-cpp-python[server] # for server
 
 pip install openai
 pip install globus-compute-endpoint

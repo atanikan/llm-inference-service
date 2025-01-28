@@ -24,6 +24,8 @@ export RAY_TMPDIR="/tmp"
 export RAYON_NUM_THREADS=4
 export RUST_BACKTRACE=1
 export VLLM_WORKER_MULTIPROC_METHOD=fork
+export PROMETHEUS_MULTIPROC_DIR="/tmp"
+export VLLM_RPC_BASE_PATH="/tmp"
 ```
 
 ## Usage
@@ -54,7 +56,9 @@ export RAY_TMPDIR="/tmp"
 export RAYON_NUM_THREADS=4
 export RUST_BACKTRACE=1
 export VLLM_WORKER_MULTIPROC_METHOD=fork
-vllm serve --model meta-llama/Meta-Llama-3-8B-Instruct --host 0.0.0.0 --tensor-parallel-size 4 --gpu-memory-utilization 0.98 --enforce-eager #For online serving
+export PROMETHEUS_MULTIPROC_DIR="/tmp"
+export VLLM_RPC_BASE_PATH="/tmp"
+vllm serve meta-llama/Meta-Llama-3-8B-Instruct --host 0.0.0.0 --tensor-parallel-size 4 --gpu-memory-utilization 0.98 --enforce-eager #For online serving
 # For offline serving refer to this example https://github.com/vllm-project/vllm/blob/main/examples/offline_inference/basic.py
 ```
 

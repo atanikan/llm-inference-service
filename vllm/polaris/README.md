@@ -9,16 +9,21 @@ This README provides instructions on how to install and use vLLM version `0.4.2`
 > **NOTE**: Current vLLM **does not** scale on more than one node (tensor-parallel-size>4) on Polaris. We are working on fixing this.
 
 ## Installation
-To install vLLM on Polaris, run the following
+To install vLLM on Polaris on a compute node, run the following
 ```bash
 module use /soft/modulefiles/
 module load conda
-conda create -p /grand/datascience/atanikanti/envs/vllm_v050_env python==3.10.12 -y
-conda activate /grand/datascience/atanikanti/envs/vllm_v050_env
-module use /soft/spack/base/0.7.1/install/modulefiles/Core
-module load gcc/11.4.0
-module load cudatoolkit-standalone
+conda create -p /grand/datascience/atanikanti/envs/vllm_v066_env python==3.10.12 -y
+conda activate /grand/datascience/atanikanti/envs/vllm_v066_env
+module use /soft/spack/base/0.8.1/install/modulefiles/Core
+module load gcc
 pip install vllm
+export HF_DATASETS_CACHE="/eagle/argonne_tpc/model_weights/"
+export HF_HOME="/eagle/argonne_tpc/model_weights/"
+export RAY_TMPDIR="/tmp"
+export RAYON_NUM_THREADS=4
+export RUST_BACKTRACE=1
+export VLLM_WORKER_MULTIPROC_METHOD=fork
 ```
 
 ## Usage
@@ -41,16 +46,16 @@ qsub -I -A <project> -q debug -l select=1 -l walltime=01:00:00 -l filesystems=ho
 module use /soft/modulefiles
 module load conda
 conda activate <path_to_conda_environment> #change path
-module use /soft/spack/base/0.7.1/install/modulefiles/Core
-module load gcc/11.4.0
-module load cudatoolkit-standalone
+module use /soft/spack/base/0.8.1/install/modulefiles/Core
+module load gcc
 export HF_DATASETS_CACHE="/eagle/argonne_tpc/model_weights/"
 export HF_HOME="/eagle/argonne_tpc/model_weights/"
 export RAY_TMPDIR="/tmp"
 export RAYON_NUM_THREADS=4
 export RUST_BACKTRACE=1
 export VLLM_WORKER_MULTIPROC_METHOD=fork
-python3 -m vllm.entrypoints.openai.api_server --model meta-llama/Meta-Llama-3-70B-Instruct --host 0.0.0.0 --tensor-parallel-size 4 --gpu-memory-utilization 0.95 --enforce-eager # for the default facebook/opt-125m model just run python -m vllm.entrypoints.api_server
+vllm serve --model meta-llama/Meta-Llama-3-8B-Instruct --host 0.0.0.0 --tensor-parallel-size 4 --gpu-memory-utilization 0.98 --enforce-eager #For online serving
+# For offline serving refer to this example https://github.com/vllm-project/vllm/blob/main/examples/offline_inference/basic.py
 ```
 
 Just run [tunnel.sh](tunnel.sh) to establish a ssh tunnel to the remote node from a login node followed by running the [vllm_client.py](vllm_client.py) to query the running model. You can alternatively use [curl.sh](curl.sh).

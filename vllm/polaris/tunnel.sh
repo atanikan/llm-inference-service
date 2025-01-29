@@ -4,7 +4,7 @@ remote_host=$(qstat -x -f $(qstat -u $USER | tail -1 | sed "s/\..*$//g") | grep 
 echo "hi $remote_host"
 # Check if there's an existing SSH tunnel running and kill it
 
-existing_tunnel_pid=$(ps aux | grep "ssh -L 8081:localhost:8081 -L 8265:localhost:8265 $remote_host" | grep -v grep | awk '{print $2}')
+existing_tunnel_pid=$(ps aux | grep "ssh -L 8000:localhost:8000 -L 8265:localhost:8265 $remote_host" | grep -v grep | awk '{print $2}')
 if [[ ! -z "$existing_tunnel_pid" ]]; then
     echo "Killing existing SSH tunnel with PID $existing_tunnel_pid..."
     kill -9 "$existing_tunnel_pid"
@@ -12,7 +12,7 @@ fi
 
 # Establish a new tunnel
 echo "Establishing SSH tunnel to $remote_host with port forwarding for 8081 and 8265..."
-ssh -L 8081:localhost:8081 -L 8265:localhost:8265 "$remote_host" -N -f
+ssh -L 8000:localhost:8000 -L 8265:localhost:8265 "$remote_host" -N -f
 
 if [[ $? -eq 0 ]]; then
     echo "SSH tunnel established successfully."

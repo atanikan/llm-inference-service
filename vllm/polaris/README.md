@@ -53,7 +53,7 @@ An alternative is to run vLLM in the background on the compute node. Check `nohu
 nohup vllm serve meta-llama/Meta-Llama-3-8B-Instruct --host 127.0.0.1 --tensor-parallel-size 4 --gpu-memory-utilization 0.98 --enforce-eager &
 ```
  
-To now interact with the model run [requests_client.py](requests_client.py) or ssh tunnel from a login node as follows
+To now interact with the model run [openai_client.py](openai_client.py) or ssh tunnel from a login node as follows
 ```bash
 bash tunnel.sh
 python3 vllm_client.py # or use curl see `curl.sh`

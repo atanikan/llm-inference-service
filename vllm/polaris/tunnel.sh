@@ -11,7 +11,7 @@ if [[ ! -z "$existing_tunnel_pid" ]]; then
 fi
 
 # Establish a new tunnel
-echo "Establishing SSH tunnel to $remote_host with port forwarding for 8081 and 8265..."
+echo "Establishing SSH tunnel to $remote_host with port forwarding for 8000 and 8265..."
 ssh -L 8000:localhost:8000 -L 8265:localhost:8265 "$remote_host" -N -f
 
 if [[ $? -eq 0 ]]; then

@@ -16,8 +16,8 @@ To install vLLM on Polaris on a compute node, run the following
 ```bash
 module use /soft/modulefiles/
 module load conda
-conda create -p /grand/datascience/atanikanti/envs/vllm_v071_env python==3.11.9 -y
-conda activate /grand/datascience/atanikanti/envs/vllm_v071_env
+conda create -n vllm_v071_env python==3.11.9 -y
+conda activate vllm_v071_env
 module use /soft/spack/base/0.8.1/install/modulefiles/Core
 module load gcc
 pip install vllm
@@ -33,7 +33,7 @@ Run the following commands to run vllm on a compute node
 ```bash
 module use /soft/modulefiles
 module load conda
-conda activate <path_to_conda_environment> #change path
+conda activate vllm_v071_env #change path
 module use /soft/spack/base/0.8.1/install/modulefiles/Core
 module load gcc
 export HF_DATASETS_CACHE="/eagle/argonne_tpc/model_weights/"
@@ -63,8 +63,8 @@ python3 vllm_client.py # or use curl see `curl.sh`
 :bulb: **Note:** Ensure you `chmod +x` all the bash scripts.
 
 
-### Run a model with multi-node setting like ray. 
-See [multi_node_inference_job_submission.sh](multi_node_inference_job_submission.sh)
+### Run multi node inference on models like Llama3.1-405B using vllm & ray. 
+See [multi_node_inference_job_submission.sh](multi_node_inference_job_submission.sh) for running Llama3.1-405B on 8 Polaris nodes. Reduce context size etc to make it fit in memory with smaller number of nodes as needed. Modify the [setup_ray_and_vllm.sh](setup_ray_and_vllm.sh) file with appropriate values if needed. For e.g. `HF_TOKEN` with your hugging face token
 
 
 ### Use Globus Compute to run vLLM remotely

@@ -16,8 +16,8 @@ To install vLLM on Polaris on a compute node, run the following
 ```bash
 module use /soft/modulefiles/
 module load conda
-conda create -p /grand/datascience/atanikanti/envs/vllm_v066_env python==3.10.12 -y
-conda activate /grand/datascience/atanikanti/envs/vllm_v066_env
+conda create -p /grand/datascience/atanikanti/envs/vllm_v071_env python==3.11.9 -y
+conda activate /grand/datascience/atanikanti/envs/vllm_v071_env
 module use /soft/spack/base/0.8.1/install/modulefiles/Core
 module load gcc
 pip install vllm
@@ -41,9 +41,9 @@ export HF_HOME="/eagle/argonne_tpc/model_weights/"
 export RAY_TMPDIR="/tmp"
 export RAYON_NUM_THREADS=4
 export RUST_BACKTRACE=1
-export VLLM_WORKER_MULTIPROC_METHOD=fork
 export PROMETHEUS_MULTIPROC_DIR="/tmp"
 export VLLM_RPC_BASE_PATH="/tmp"
+export HF_TOKEN="" #Add your token
 export no_proxy="127.0.0.1,localhost"
 vllm serve meta-llama/Meta-Llama-3-8B-Instruct --host 127.0.0.1 --tensor-parallel-size 4 --gpu-memory-utilization 0.98 --enforce-eager #For online serving
 ```
@@ -61,6 +61,11 @@ python3 vllm_client.py # or use curl see `curl.sh`
 
 :bulb: **Note:** You can run `python3 vllm_client.py -h` to view all available options
 :bulb: **Note:** Ensure you `chmod +x` all the bash scripts.
+
+
+### Run a model with multi-node setting like ray. 
+See [multi_node_inference_job_submission.sh](multi_node_inference_job_submission.sh)
+
 
 ### Use Globus Compute to run vLLM remotely
 Instructions in [vLLM_Inference.ipynb](vLLM_Inference.ipynb) notebook will guide you in triggering vllm inference runs remotely from your local machine using globus compute

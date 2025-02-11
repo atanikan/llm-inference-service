@@ -12,12 +12,6 @@ cd $PBS_O_WORKDIR
 echo Jobid: $PBS_JOBID
 echo Running on host `hostname`
 
-# User Configuration
-NNODES=$(wc -l < ${PBS_NODEFILE})
-NGPU_PER_NODE=$(nvidia-smi -L | wc -l)
-NGPUS=$((${NNODES}*${NGPU_PER_NODE}))
-echo "NUM_OF_NODES= ${NNODES} TOTAL_NUM_GPUS= ${NGPUS} GPUS_PER_NODE= ${NGPU_PER_NODE}"
-
 # Initialize environment
 export TMPDIR=/tmp
 
@@ -101,3 +95,7 @@ while true; do
     echo "All models started successfully."
     break
 done
+
+
+# Run your client script to interact with the running model
+

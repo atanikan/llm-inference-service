@@ -19,7 +19,7 @@ setup_environment() {
     module load conda
 
     # Source the Conda initialization script directly
-    conda activate <replace>
+    conda activate vllm_v071_env
 
     # Set environment variables
     export HF_DATASETS_CACHE='/eagle/argonne_tpc/model_weights/'

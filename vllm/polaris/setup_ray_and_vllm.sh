@@ -27,6 +27,8 @@ setup_environment() {
     export RAY_TMPDIR='/tmp'
     export OMP_NUM_THREADS=4
     export VLLM_IMAGE_FETCH_TIMEOUT=60
+    export PROMETHEUS_MULTIPROC_DIR="/tmp"
+    export VLLM_RPC_BASE_PATH="/tmp"
     export HF_TOKEN= #replace with your token
     ulimit -c unlimited
 

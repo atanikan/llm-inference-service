@@ -64,7 +64,7 @@ python3 vllm_client.py # or use curl see `curl.sh`
 
 
 ### Run multi node inference on models like Llama3.1-405B using vllm & ray. 
-See [multi_node_inference_job_submission.sh](multi_node_inference_job_submission.sh) for running Llama3.1-405B on 8 Polaris nodes. Reduce context size etc to make it fit in memory with smaller number of nodes as needed. Modify the [setup_ray_and_vllm.sh](setup_ray_and_vllm.sh) file with appropriate values if needed. For e.g. `HF_TOKEN` with your hugging face token
+See [multi_node_inference_job_submission.sh](job_submission_multi_node.sh) for running Llama3.1-405B on 8 Polaris nodes. Reduce context size etc to make it fit in memory with smaller number of nodes as needed. Modify the [setup_ray_and_vllm.sh](setup_ray_and_vllm.sh) file with appropriate values if needed. For e.g. `HF_TOKEN` with your hugging face token
 
 
 ### Use Globus Compute to run vLLM remotely

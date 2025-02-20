@@ -1,0 +1,39 @@
+#!/bin/bash
+#PBS -N install_vllm
+#PBS -A <project_name>
+#PBS -l walltime=00:20:00
+#PBS -l filesystems=home:eagle
+#PBS -l select=4
+#PBS -q by-gpu
+#PBS -k doe
+
+# Load required modules
+module use /soft/modulefiles
+module load conda
+
+# Setup proxy
+export HTTP_PROXY="http://proxy.alcf.anl.gov:3128"
+export HTTPS_PROXY="http://proxy.alcf.anl.gov:3128"
+export http_proxy="http://proxy.alcf.anl.gov:3128"
+export https_proxy="http://proxy.alcf.anl.gov:3128"
+
+
+# Load modules and activate the conda environment
+source /etc/profile.d/modules.sh
+source /etc/profile  # Initialize environment properly
+module use /soft/modulefiles
+module load conda
+
+conda activate vllm-sophia-env-072
+
+export HF_DATASETS_CACHE='/eagle/argonne_tpc/model_weights/'
+export HF_HOME='/eagle/argonne_tpc/model_weights/'
+export RAY_TMPDIR='/tmp'
+export OMP_NUM_THREADS=4
+export VLLM_IMAGE_FETCH_TIMEOUT=60
+export NCCL_SOCKET_IFNAME=infinibond0
+export RAY_TMPDIR="/tmp"
+export TMPDIR="/tmp"
+export HF_TOKEN='' #change this
+
+python3 run_vllm_budget_forcing.py

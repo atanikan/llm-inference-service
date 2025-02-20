@@ -4,7 +4,7 @@
 #PBS -l walltime=00:20:00
 #PBS -l filesystems=home:eagle
 #PBS -l select=1
-#PBS -q by-node
+#PBS -q by-gpu
 #PBS -k doe
 
 # Load required modules

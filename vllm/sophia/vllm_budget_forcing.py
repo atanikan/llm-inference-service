@@ -8,7 +8,7 @@ NUM_IGNORE = 1
 
 model = LLM(
     "simplescaling/s1-32B", # s1 originally gets this prompt wrong but with budget forcing it fixes it
-    tensor_parallel_size=2,
+    tensor_parallel_size=4,
     gpu_memory_utilization=0.98,
     max_model_len=18352)
 tok = AutoTokenizer.from_pretrained(

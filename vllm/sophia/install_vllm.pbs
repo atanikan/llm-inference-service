@@ -19,7 +19,6 @@ export https_proxy="http://proxy.alcf.anl.gov:3128"
 
 # Create and activate conda environment
 conda create -n vllm-sophia-env-072 python==3.11.9 -y
-source ${CONDA_PREFIX}/etc/profile.d/conda.sh
 conda activate vllm-sophia-env-072
 
 # Install vllm

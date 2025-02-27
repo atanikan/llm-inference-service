@@ -7,6 +7,8 @@
 #PBS -q by-gpu
 #PBS -k doe
 
+cd 'path-to-where-you-copied-repo/llm-inference-service/vllm/sophia'
+CURRENT_DIR=$(pwd)
 source setup_environment.sh
 
 python3 run_vllm_budget_forcing.py

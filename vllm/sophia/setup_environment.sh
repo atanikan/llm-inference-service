@@ -18,8 +18,8 @@ module load conda
 conda activate vllm-sophia-env-072
 
 # Set environment variables
-export HF_DATASETS_CACHE='/eagle/argonne_tpc/model_weights/'
-export HF_HOME='/eagle/argonne_tpc/model_weights/'
+export HF_DATASETS_CACHE='/eagle/projects/argonne_tpc/model_weights/'
+export HF_HOME='/eagle/projects/argonne_tpc/model_weights/'
 export RAY_TMPDIR='/tmp'
 export TMPDIR='/tmp'
 export NCCL_SOCKET_IFNAME='infinibond0'

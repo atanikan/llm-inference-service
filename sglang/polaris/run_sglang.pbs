@@ -1,0 +1,13 @@
+#!/bin/bash
+#PBS -N run_sglang
+#PBS -A <project_name>
+#PBS -l walltime=00:20:00
+#PBS -l filesystems=home:eagle:grand
+#PBS -l select=1
+#PBS -q debug
+#PBS -k doe
+
+cd $PBS_WORKDIR
+source setup_environment.sh
+
+python3 offline_batch_inference.py  --model meta-llama/Llama-3.1-8B-Instruct

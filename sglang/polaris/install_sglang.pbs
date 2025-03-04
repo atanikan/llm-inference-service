@@ -1,0 +1,27 @@
+#!/bin/bash
+#PBS -N install_sglang
+#PBS -A <project_name>
+#PBS -l walltime=00:20:00
+#PBS -l filesystems=home:eagle:grand
+#PBS -l select=1
+#PBS -q debug
+#PBS -k doe
+
+# Load required modules
+module use /soft/modulefiles; module load conda; conda activate base
+
+# Setup proxy
+export HTTP_PROXY="http://proxy.alcf.anl.gov:3128"
+export HTTPS_PROXY="http://proxy.alcf.anl.gov:3128"
+export http_proxy="http://proxy.alcf.anl.gov:3128"
+export https_proxy="http://proxy.alcf.anl.gov:3128"
+
+# Create and activate conda environment
+conda create -n sglang-0.4.3.post2 python==3.11.9 -y
+conda activate sglang-0.4.3.post2
+module use /soft/spack/base/0.8.1/install/modulefiles/Core
+module load gcc
+
+# Install sglang and other dependencies
+uv pip install "sglang[all]>=0.4.3.post2" --find-links https://flashinfer.ai/whl/cu124/torch2.5/flashinfer-python
+pip install transformers==4.48.3

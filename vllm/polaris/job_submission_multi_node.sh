@@ -78,7 +78,7 @@ framework="vllm"
 cluster="sophia"
 model_command="vllm serve ${model_name} --host 127.0.0.1 --port 8000 \
 --tensor-parallel-size 4 --pipeline-parallel-size 8  \
---disable-log-stats --enable-chunked-prefill --multi-step-stream-outputs False \
+--disable-log-stats --enable-chunked-prefill \
 --trust-remote-code --gpu-memory-utilization 0.95 --disable-log-requests"
 log_file="$PWD/logfile_sophia-vllm-${model_name}_$(hostname).log"
 

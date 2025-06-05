@@ -6,95 +6,63 @@
 #PBS -q debug
 #PBS -A datascience
 
-echo Working directory is $PBS_O_WORKDIR
-cd $PBS_O_WORKDIR
+# This script is the master controller for the job.
+# It sets up the environment, uses one Python script to manage the Ray cluster,
+# and a second Python script to launch the VLLM server.
 
-echo Jobid: $PBS_JOBID
-echo Running on host `hostname`
+set -e # Exit immediately if a command exits with a non-zero status.
 
-# Initialize environment
-export TMPDIR=/tmp
+#echo "Working directory: $PBS_O_WORKDIR"
+#cd "$PBS_O_WORKDIR" || exit
 
-# Source the common script
-source setup_ray_and_vllm.sh
+echo "Job ID: $PBS_JOBID"
+echo "Running on: $(hostname)"
 
-# Setup the environment
-setup_environment
+# --- Environment and Script Setup ---
+# The setup script handles all environment variable exports and conda activation.
+export SETUP_SCRIPT_PATH="${PWD}/setup_env.sh"
+source "$SETUP_SCRIPT_PATH"
 
-# Read nodes from PBS_NODEFILE
-nodes=($(sort -u "$PBS_NODEFILE"))
-num_nodes=${#nodes[@]}
+export RAY_SCRIPT_PATH="${PWD}/start_ray_cluster.py"
+export VLLM_SCRIPT_PATH="${PWD}/start_vllm.py"
+export VLLM_TEST_SCRIPT_PATH="${PWD}/vllm_test_client.py"
 
-# Get the current node's hostname (assumed to be the head node)
-head_node=$(hostname | sed 's/.lab.alcf.anl.gov//')
+# --- Ray Cluster Management ---
+# Start the Ray cluster. The script will print the head node's IP to stdout.
+echo "Starting Ray cluster with Python script..."
+vllm_host_ip=$(python3 "$RAY_SCRIPT_PATH" --command start --setup-script "$SETUP_SCRIPT_PATH")
+if [ -z "$vllm_host_ip" ]; then
+    echo "Failed to get Ray head node IP. Exiting."
+    exit 1
+fi
+echo "Ray cluster setup appears successful. Head node IP: $vllm_host_ip"
 
-echo "Nodes: ${nodes[@]}"
-echo "Head node: $head_node"
+# --- Start VLLM Server in Background ---
+echo "Attempting to start VLLM server in the background on $vllm_host_ip..."
+python3 "$VLLM_SCRIPT_PATH" \
+    --setup-script "$SETUP_SCRIPT_PATH" \
+    --model-name "meta-llama/Meta-Llama-3.1-8B-Instruct" \
+    --host "$vllm_host_ip" \
+    --port 8000 \
+    --tensor-parallel-size 4 \
+    --pipeline-parallel-size 2 \
+    --log-file "$PWD/vllm_server_$(hostname).log" &
 
-# Get the IP address of the head node
-RAY_HEAD_IP=$(getent hosts "$head_node" | awk '{ print $1 }')
-echo "Ray head IP: $RAY_HEAD_IP"
+# --- Verify VLLM Server ---
+echo "Waiting for VLLM server to initialize..."
+sleep 60 # Give the server ample time to start up before testing.
 
-# Export variables for use in functions
-export head_node
-export RAY_HEAD_IP
-export HOST_IP="$RAY_HEAD_IP"
-export RAY_ADDRESS="$RAY_HEAD_IP:6379"
+echo "Verifying VLLM server..."
+# The test script will now log success or failure but will not cause the job to exit.
+python3 "$VLLM_TEST_SCRIPT_PATH" --host "$vllm_host_ip" --port 8000
 
-# Define worker nodes (exclude head node)
-worker_nodes=()
-for node in "${nodes[@]}"; do
-    short_node=$(echo "$node" | sed 's/.lab.alcf.anl.gov//')
-    if [ "$short_node" != "$head_node" ]; then
-        worker_nodes+=("$short_node")
-    fi
-done
+echo "VLLM server is running. Check logs for verification status."
+echo "The job will now sleep indefinitely. You can connect to the VLLM server at http://$vllm_host_ip:8000"
 
-echo "Worker nodes: ${worker_nodes[@]}"
+# --- Cleanup ---
+# The trap will run when the job is terminated (e.g., walltime limit).
+# It ensures the Ray cluster is shut down cleanly.
+trap "echo 'Job terminating. Stopping Ray cluster...'; python3 '$RAY_SCRIPT_PATH' --command stop --setup-script '$SETUP_SCRIPT_PATH'; exit" SIGINT SIGTERM
 
-# Stop Ray on all nodes using mpiexec
-echo "Stopping any existing Ray processes on all nodes..."
-mpiexec -n "$num_nodes" -hostfile "$PBS_NODEFILE" bash -c "source $COMMON_SETUP_SCRIPT; setup_environment; stop_ray; cleanup_python_processes;"
-
-# Start Ray head node
-echo "Starting Ray head node..."
-mpiexec -n 1 -host "$head_node" bash -l -c "source $COMMON_SETUP_SCRIPT; export RAY_HEAD_IP=$RAY_HEAD_IP; setup_environment; start_ray_head"
-
-echo "Starting Ray worker nodes..."
-for worker in "${worker_nodes[@]}"; do
-    echo "Starting Ray worker on $worker"
-    mpiexec -n 1 -host "$worker" bash -l -c "source $COMMON_SETUP_SCRIPT; export RAY_HEAD_IP=$RAY_HEAD_IP; setup_environment; start_ray_worker"
-done
-
-# Verify Ray cluster status
-echo "Verifying Ray cluster status..."
-verify_ray_cluster "$num_nodes"
-
-echo "Ray cluster setup complete."
-
-# Define model parameters
-model_name="meta-llama/Meta-Llama-3.1-405B-Instruct"
-framework="vllm"
-cluster="sophia"
-model_command="vllm serve ${model_name} --host 127.0.0.1 --port 8000 \
---tensor-parallel-size 4 --pipeline-parallel-size 8  \
---disable-log-stats --enable-chunked-prefill \
---trust-remote-code --gpu-memory-utilization 0.95 --disable-log-requests"
-log_file="$PWD/logfile_sophia-vllm-${model_name}_$(hostname).log"
-
-# Initialize retry counter for the model
-retry_counter_model_1=0
-
-# Start the model
-while true; do
-    echo "Starting models sequence..."
-    if ! start_model "$model_name" "$model_command" "$log_file" retry_counter_model_1; then
-        continue  # Restart from the beginning if this fails
-    fi
-    echo "All models started successfully."
-    break
-done
-
-
-# Run your client script to interact with the running model
+sleep infinity
 

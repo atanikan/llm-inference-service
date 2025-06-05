@@ -63,8 +63,46 @@ python3 vllm_client.py # or use curl see `curl.sh`
 :bulb: **Note:** Ensure you `chmod +x` all the bash scripts.
 
 
-### Run multi node inference on models like Llama3.1-405B using vllm & ray. 
-See [multi_node_inference_job_submission.sh](job_submission_multi_node.sh) for running Llama3.1-405B on 8 Polaris nodes. Reduce context size etc to make it fit in memory with smaller number of nodes as needed. Modify the [setup_ray_and_vllm.sh](setup_ray_and_vllm.sh) file with appropriate values if needed. For e.g. `HF_TOKEN` with your hugging face token
+### Run multi-node inference using vLLM and Ray
+
+For large models like Llama3.1-405B that require multiple nodes, this repository provides a robust set of scripts to automate the setup of a multi-node Ray cluster and launch the VLLM server.
+
+The system is composed of three main parts:
+1.  `job_submission_multi_node.sh`: The master PBS script that orchestrates the entire process.
+2.  `setup_env.sh`: A centralized script to configure the environment on all nodes.
+3.  A set of Python scripts (`start_ray_cluster.py`, `start_vllm.py`, `hpc_utils.py`, `vllm_test_client.py`) that handle the logic for starting Ray, VLLM, and testing the connection.
+
+#### Configuration
+
+Before running, you **must** configure the environment in the `setup_env.sh` script:
+
+1.  **Set Conda Environment Path:** Modify the `VLLM_CONDA_PATH` variable to point to the absolute path of your Conda environment.
+2.  **Set HuggingFace Token:** If you are using a gated model, you must set your HuggingFace token in the `HF_TOKEN` variable.
+
+#### Running as a Batch Job (Recommended)
+
+The simplest way to run a multi-node job is to submit the master script to the PBS scheduler. You can modify the resource requests (e.g., `select=8`, `walltime`) at the top of the `job_submission_multi_node.sh` script as needed.
+
+```bash
+qsub job_submission_multi_node.sh
+```
+The script will automatically handle:
+- Setting up the Ray cluster across the allocated nodes.
+- Launching the VLLM server in the background.
+- Running a test client to verify that the server is operational.
+- The job will remain active until the walltime limit is reached. You can check the output files (`*.o` and `*.e`) for the server's IP address and status.
+
+#### Running Interactively (for Debugging)
+
+To run interactively, first request a multi-node allocation from PBS:
+```bash
+qsub -I -A <project> -q debug -l select=2 -l place=scatter -l walltime=01:00:00 -l filesystems=home:eagle
+```
+Once your interactive job starts, you can execute the master script directly from your shell:
+```bash
+bash job_submission_multi_node.sh
+```
+This will allow you to see the live output from all the scripts and is useful for debugging any issues.
 
 
 ### Use Globus Compute to run vLLM remotely

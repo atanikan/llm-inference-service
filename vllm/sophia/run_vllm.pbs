@@ -10,4 +10,5 @@
 cd $PBS_WORKDIR
 source setup_environment.sh
 
-python3 run_vllm_budget_forcing.py
+python3 run_gemmma.py
+#python3 run_vllm_budget_forcing.py

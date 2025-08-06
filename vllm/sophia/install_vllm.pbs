@@ -17,9 +17,20 @@ export HTTPS_PROXY="http://proxy.alcf.anl.gov:3128"
 export http_proxy="http://proxy.alcf.anl.gov:3128"
 export https_proxy="http://proxy.alcf.anl.gov:3128"
 
+
+export HF_DATASETS_CACHE='/eagle/argonne_tpc/model_weights/'
+export HF_HOME='/eagle/argonne_tpc/model_weights/'
+export HF_HUB_CACHE='/eagle/argonne_tpc/model_weights/hub'
+export RAY_TMPDIR='/tmp'
+export NCCL_SOCKET_IFNAME='infinibond0'
+export OMP_NUM_THREADS=4
+export VLLM_IMAGE_FETCH_TIMEOUT=60
+export USE_FASTSAFETENSOR='true'
+
 # Create and activate conda environment
-conda create -n vllm-sophia-env-072 python==3.11.9 -y
-conda activate vllm-sophia-env-072
+conda create -n vllm-sophia-env-latest python==3.12.0 -y
+conda activate vllm-sophia-env-latest
 
 # Install vllm
-pip install vllm==0.7.2
+pip install vllm
+pip install openai

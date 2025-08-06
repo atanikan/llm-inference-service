@@ -3,7 +3,7 @@
 #PBS -A <project_name>
 #PBS -l walltime=00:30:00
 #PBS -l filesystems=home:eagle
-#PBS -l select=4
+#PBS -l select=8
 #PBS -q by-gpu
 #PBS -k doe
 

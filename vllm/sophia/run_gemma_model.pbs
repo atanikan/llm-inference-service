@@ -1,0 +1,13 @@
+#!/bin/bash
+#PBS -N run_vllm
+#PBS -A <project_name>
+#PBS -l walltime=00:30:00
+#PBS -l filesystems=home:eagle
+#PBS -l select=8
+#PBS -q by-gpu
+#PBS -k doe
+
+cd $PBS_WORKDIR
+source setup_environment.sh
+
+python3 run_gemma.py

@@ -45,12 +45,12 @@ export PROMETHEUS_MULTIPROC_DIR="/tmp"
 export VLLM_RPC_BASE_PATH="/tmp"
 export HF_TOKEN="" #Add your token
 export no_proxy="127.0.0.1,localhost"
-vllm serve meta-llama/Meta-Llama-3-8B-Instruct --host 127.0.0.1 --tensor-parallel-size 4 --gpu-memory-utilization 0.98 --enforce-eager #For online serving
+vllm serve meta-llama/Meta-Llama-3-8B-Instruct --host 127.0.0.1 --tensor-parallel-size 4 --gpu-memory-utilization 0.9 --enforce-eager #For online serving
 ```
 
 An alternative is to run vLLM in the background on the compute node. Check `nohup.out` for logs and ensure model is up and running
 ```bash
-nohup vllm serve meta-llama/Meta-Llama-3-8B-Instruct --host 127.0.0.1 --tensor-parallel-size 4 --gpu-memory-utilization 0.98 --enforce-eager &
+nohup vllm serve meta-llama/Meta-Llama-3-8B-Instruct --host 127.0.0.1 --tensor-parallel-size 4 --gpu-memory-utilization 0.9 --enforce-eager &
 ```
  
 To now interact with the model run [openai_client.py](openai_client.py) or ssh tunnel from a login node as follows
